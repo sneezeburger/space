@@ -1,5 +1,5 @@
 function onkeydown(e){
-	switch(e.key){
+	switch(e.key){ // TODO more efficient to check keycode?
 		case 'ArrowRight':
 			moveright=1;
 			break;
@@ -37,44 +37,64 @@ function tick(){
 		delta=-shipSpeedPixelsPerSec*elapsedSec;
 	}
 	if(delta){
-		left=Math.max(0,left+delta);
-		ship.style.left=String(left)+'px';
+		ship.style.left=String(Math.max(0,getElementLeft(ship)+delta))+'px';
 	}
-	animateShot(elapsedSec);
+	for(i=0;i<shots.length;i++){
+		if(shots[i].style.display=='none'){
+			shots[i].parentNode.removeChild(shots[i]);
+			shots.splice(i,1);
+		}else{
+			animateShot(elapsedSec, shots[i]);
+		}
+	}
 	this.previousTime=thisTickTime;
 }
 
 function shoot(){
-	shot.style.display='inline';
-	shot.style.left=String(left)+'px';
-	shotTop=parseInt(document.defaultView.getComputedStyle(ship).top);
-	shot.style.top=String(shotTop)+'px';
+	var newShot=document.createElement('div');
+	newShot.classList.add('shot');
+	var text=document.createTextNode("|");
+	newShot.appendChild(text);
+	document.body.appendChild(newShot);
+	newShot.style.left=String(getElementLeft(ship))+'px';
+	newShot.style.top=String(getElementTop(ship))+'px';
+	shots.push(newShot);
 }
 
-function animateShot(elapsedSec){
-	shotTop-=shotSpeedPixelsPerSec*elapsedSec;
-	if(shotTop<1){
+function animateShot(elapsedSec, shot){
+	if(getElementTop(shot)<1){
 		shot.style.display='none';
 	}else{
-		shot.style.top=String(shotTop)+'px';
+		shot.style.top=String(getElementTop(shot)-elapsedSec*shotSpeedPixelsPerSec)+'px';
 	}
+}
+
+function getElementLeft(element){
+	return parseFloat(document.defaultView.getComputedStyle(element).left);
+}
+
+function getElementTop(element){
+	return parseFloat(document.defaultView.getComputedStyle(element).top);
 }
 
 document.onkeydown=onkeydown;
 document.onkeyup=onkeyup;
-document.onload=onload; // TODO WTF
 document.onload=function(e){ // TODO why isn't this working
 	tick.previousTime=Date.now();
 	console.log('window.onload via anonymous fn',e,Date.now());
 }
+// Elements
 var ship=document.getElementById("ship");
-var shot=document.getElementById("shot");
 var score=document.getElementById("score");
-var left=parseInt(document.defaultView.getComputedStyle(ship).left);
-var shotTop=parseInt(document.defaultView.getComputedStyle(ship).top);
+
+// States
 var moveright=0;
 var moveleft=0;
+var shots=[]; // holds HTML shot elements
+
+// Configurables
 var tickInterval=10;
 var shipSpeedPixelsPerSec=150;
 var shotSpeedPixelsPerSec=450;
+
 var tickTimer=setInterval(tick,tickInterval); // TODO null this on game over
