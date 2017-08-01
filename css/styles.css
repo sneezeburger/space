@@ -19,12 +19,11 @@ body {
 	left: 50%;
 }
 
-#shot {
+.shot {
 	font-size: 300%;
 	position: fixed;
 	bottom: 80px;
 	left: 50%;
-	display: none;
 }
 
 .invader {
