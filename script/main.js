@@ -8,7 +8,10 @@ function onkeydown(e){
 			break;
 		case ' ':
 		case 'ArrowUp':
-			shoot();
+			if(!shooting){
+				shooting=1;
+				shoot();
+			}
 			break;
 	}
 }
@@ -20,6 +23,10 @@ function onkeyup(e){
 			break;
 		case 'ArrowLeft':
 			moveleft=0;
+			break;
+		case ' ':
+		case 'ArrowUp':
+			shooting=0;
 			break;
 	}
 }
@@ -88,6 +95,7 @@ var ship=document.getElementById("ship");
 var score=document.getElementById("score");
 
 // States
+var shooting=0;
 var moveright=0;
 var moveleft=0;
 var shots=[]; // holds HTML shot elements
