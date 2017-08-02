@@ -12,23 +12,17 @@ body {
 	font-size: 400%;
 }
 
-#ship {
+.ship {
 	font-size: 300%;
 	position: fixed;
-	bottom: 40px;
-	left: 50%;
 }
 
 .shot {
 	font-size: 300%;
 	position: fixed;
-	bottom: 80px;
-	left: 50%;
 }
 
 .invader {
 	font-size: 300%;
 	position: absolute;
-	top: 50%;
-	left: 50%;
 }
