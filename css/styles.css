@@ -1,14 +1,18 @@
+/* Ughhhhhhhhhhhhhhhhhh
+htmltag
+#id
+.class
+*/
+
 body {
 	font-family: monospace;
 	background-color: black;
 	color: white;
 }
 
-#score {
+.score {
 	color: lime;
 	position: absolute;
-	top: 20px;
-	left: 20px;
 	font-size: 400%;
 }
 

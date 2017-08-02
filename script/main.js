@@ -103,7 +103,7 @@ function createInvaders(){
 			var text=document.createTextNode("$");
 			newInvader.appendChild(text);
 			document.body.appendChild(newInvader);
-			newInvader.style.left=String(i*50)+'px';
+			newInvader.style.left=String(i*50)+'px'; // TODO center this
 			newInvader.style.top=String(j*50)+'px';
 			invaders.push(newInvader);
 		}
@@ -120,14 +120,24 @@ function createShip(){
 	document.body.appendChild(ship);
 }
 
+function createScore(){
+	score=document.createElement('div');
+	score.classList.add('score');
+	var text=document.createTextNode("000000");
+	score.style.left='20px';
+	score.style.top='20px';
+	score.appendChild(text);
+	document.body.appendChild(score);
+}
+
 function onload(e){
 	document.onkeydown=onkeydown;
 	document.onkeyup=onkeyup;
-	score=document.getElementById("score");
 	tick.previousTime=Date.now();
 	tickTimer=setInterval(tick,tickInterval); // TODO null this on game over
 	createInvaders();
 	createShip();
+	createScore();
 }
 
 function overlap(a,b){
