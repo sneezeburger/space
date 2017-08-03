@@ -13,7 +13,14 @@ function onkeydown(e){
 				shoot();
 			}
 			break;
+		case 'l':
+			doThing();
+			break;
 	}
+}
+
+function doThing(){
+	console.log("invader: ",invaders.length,"shots ", shots.length);
 }
 
 function onkeyup(e){
@@ -33,37 +40,17 @@ function onkeyup(e){
 
 function tick(){
 	var thisTickTime=Date.now();
+	if(!this.previousTime){
+		this.previousTime=thisTickTime;
+		return;
+	}
 	var elapsedSec=(thisTickTime-this.previousTime)/1000;
-	var delta=0;
-	if(moveright){
-		ship.style.color='blue';
-		delta=shipSpeedPixelsPerSec*elapsedSec;
-	}
-	if(moveleft){
-		ship.style.color='green';
-		delta=-shipSpeedPixelsPerSec*elapsedSec;
-	}
-	if(delta){
-		ship.style.left=String(Math.max(0,getElementLeft(ship)+delta))+'px';
-		ship.style.left=String(Math.min(document.body.clientWidth-ship.offsetWidth,getElementLeft(ship)))+'px'; // TODO not quite right
-	}
-	for(i=0;i<shots.length;++i){ // TODO shots.foreach?
-		if(shots[i].style.display=='none'){
-			shots[i].parentNode.removeChild(shots[i]);
-			shots.splice(i,1);
-		}else{
-			animateShot(elapsedSec, shots[i]);
-		}
-	}
-
-	for(i=0;i<shots.length;++i){ // TODO shots.foreach?
-		for(j=0;j<invaders.length;++j){
-			if(overlap(shots[i],invaders[j])){
-				shots[i].style.display='none';
-				invaders[j].style.display='none'; // TODO add a HTML5 canvas and use it to draw fancy particle explosions
-			}
-		}
-	}
+	animateShip(elapsedSec);
+	animateShots(elapsedSec);
+	animateInvaders(elapsedSec);
+	checkForCollisions();
+	removeStaleShots();
+	removeStaleInvaders();
 	this.previousTime=thisTickTime;
 }
 
@@ -75,15 +62,83 @@ function shoot(){
 	document.body.appendChild(newShot);
 	newShot.style.left=String(getElementLeft(ship))+'px';
 	newShot.style.top=String(getElementTop(ship)-ship.offsetHeight)+'px'; // TODO not quite right
-
 	shots.push(newShot);
 }
 
-function animateShot(elapsedSec, shot){
-	if(getElementTop(shot)<1){
-		shot.style.display='none';
-	}else{
-		shot.style.top=String(getElementTop(shot)-elapsedSec*shotSpeedPixelsPerSec)+'px';
+function animateShip(elapsedSec){
+	var delta=0;
+	if(moveright){
+		ship.style.color='blue';
+		delta=shipSpeedPixelsPerSec*elapsedSec;
+	}
+	if(moveleft){
+		ship.style.color='green';
+		delta=-shipSpeedPixelsPerSec*elapsedSec;
+	}
+	if(delta){
+		var proposedRight=getElementRight(ship)-delta;
+		var proposedLeft=getElementLeft(ship)+delta;
+		if(proposedRight<0){
+			ship.style.left=null;
+			ship.style.right='0px';
+		} else {
+			ship.style.right=null;
+			ship.style.left=String(Math.max(0,proposedLeft))+'px';
+		}
+	}
+}
+
+function animateShots(elapsedSec){
+	for(i=0;i<shots.length;++i){ // TODO shots.foreach?
+		if(getElementTop(shots[i])<0){ // TODO let it go off 
+			shots[i].parentNode.removeChild(shots[i]);
+			shots.splice(i,1);
+		}else{
+			shots[i].style.top=String(getElementTop(shots[i])-elapsedSec*shotSpeedPixelsPerSec)+'px';
+		}
+	}
+}
+
+function animateInvaders(elapsedSec){
+	if(isNaN(this.time)){
+		this.time=0;
+	}
+	this.time+=elapsedSec;
+	if(this.time>1){
+		this.time-=1;
+//		console.log("Animate!");
+	}
+}
+
+function checkForCollisions(){
+	for(i=0;i<shots.length;++i){ // TODO shots.foreach?
+		for(j=0;j<invaders.length;++j){
+			if(overlap(shots[i],invaders[j])){
+				shots[i].style.display='none';
+				invaders[j].style.display='none';
+				// TODO add a HTML5 canvas and use it to draw fancy particle explosions
+				// also TODO delete invaders[j];
+				// also update score
+			}
+		}
+	}
+}
+
+function removeStaleShots(){
+	for(i=0;i<shots.length;++i){ // TODO shots.foreach?
+		if(shots[i].style.display=='none'){
+			shots[i].parentNode.removeChild(shots[i]);
+			shots.splice(i,1);
+		}
+	}
+}
+
+function removeStaleInvaders(){
+	for(j=0;j<invaders.length;++j){
+		if(invaders[j].style.display=='none'){
+			invaders[j].parentNode.removeChild(invaders[j]);
+			invaders.splice(j,1);
+		}
 	}
 }
 
@@ -91,8 +146,16 @@ function getElementLeft(element){
 	return parseFloat(document.defaultView.getComputedStyle(element).left);
 }
 
+function getElementRight(element){
+	return parseFloat(document.defaultView.getComputedStyle(element).right);
+}
+
 function getElementTop(element){
 	return parseFloat(document.defaultView.getComputedStyle(element).top);
+}
+
+function getElementBottom(element){
+	return parseFloat(document.defaultView.getComputedStyle(element).bottom);
 }
 
 function createInvaders(){
@@ -133,7 +196,6 @@ function createScore(){
 function onload(e){
 	document.onkeydown=onkeydown;
 	document.onkeyup=onkeyup;
-	tick.previousTime=Date.now();
 	tickTimer=setInterval(tick,tickInterval); // TODO null this on game over
 	createInvaders();
 	createShip();
