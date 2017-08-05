@@ -116,11 +116,15 @@ function checkForCollisions(){
 				shots[i].style.display='none';
 				invaders[j].style.display='none';
 				// TODO add a HTML5 canvas and use it to draw fancy particle explosions
-				// also TODO delete invaders[j];
-				// also update score
+				addPoints(1);
 			}
 		}
 	}
+}
+
+function addPoints(points){
+	var newScore=parseInt(score.innerHTML)+points;
+	score.innerHTML='0'.repeat(Math.max(0,6-String(newScore).length)) + String(parseInt(score.innerHTML)+points);
 }
 
 function removeStaleShots(){
