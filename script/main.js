@@ -57,8 +57,7 @@ function tick(){
 function shoot(){
 	var newShot=document.createElement('div');
 	newShot.classList.add('shot');
-	var text=document.createTextNode("|");
-	newShot.appendChild(text);
+	newShot.innerHTML='|';
 	document.body.appendChild(newShot);
 	newShot.style.left=String(getElementLeft(ship))+'px';
 	newShot.style.top=String(getElementTop(ship)-ship.offsetHeight)+'px'; // TODO not quite right
@@ -163,8 +162,7 @@ function createInvaders(){
 		for(j=1;j<=5;++j){
 			var newInvader=document.createElement('div');
 			newInvader.classList.add('invader');
-			var text=document.createTextNode("$");
-			newInvader.appendChild(text);
+			newInvader.innerHTML='$';
 			document.body.appendChild(newInvader);
 			newInvader.style.left=String(i*50)+'px'; // TODO center this
 			newInvader.style.top=String(j*50)+'px';
@@ -176,8 +174,7 @@ function createInvaders(){
 function createShip(){
 	ship=document.createElement('div');
 	ship.classList.add('ship');
-	var text=document.createTextNode("X");
-	ship.appendChild(text);
+	ship.innerHTML='X';
 	ship.style.left='50%';
 	ship.style.bottom='40px';
 	document.body.appendChild(ship);
@@ -186,10 +183,7 @@ function createShip(){
 function createScore(){
 	score=document.createElement('div');
 	score.classList.add('score');
-	var text=document.createTextNode("000000");
-	score.style.left='20px';
-	score.style.top='20px';
-	score.appendChild(text);
+	score.innerHTML='000000';
 	document.body.appendChild(score);
 }
 
