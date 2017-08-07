@@ -32,3 +32,10 @@ body {
 	font-size: 300%;
 	position: absolute;
 }
+
+.victory {
+	font-size: 800%;
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}

@@ -51,6 +51,7 @@ function tick(){
 	checkForCollisions();
 	removeStaleShots();
 	removeStaleInvaders();
+	checkForVictory();
 	this.previousTime=thisTickTime;
 }
 
@@ -62,6 +63,16 @@ function shoot(){
 	newShot.style.left=String(getElementLeft(ship))+'px';
 	newShot.style.top=String(getElementTop(ship)-ship.offsetHeight)+'px'; // TODO not quite right
 	shots.push(newShot);
+}
+
+function checkForVictory(){
+	if(invaders.length<1){
+		var text=document.createElement('div');
+		text.classList.add('victory');
+		text.innerHTML='CONGRATULATIONS YOU HAVE SAVED THE PRINCESS';
+		document.body.appendChild(text);
+		clearInterval(tickTimer);
+	}
 }
 
 function animateShip(elapsedSec){
@@ -116,7 +127,7 @@ function checkForCollisions(){
 				shots[i].style.display='none';
 				invaders[j].style.display='none';
 				// TODO add a HTML5 canvas and use it to draw fancy particle explosions
-				addPoints(1);
+				addPoints(invaders[j].pointValue);
 			}
 		}
 	}
@@ -162,17 +173,24 @@ function getElementBottom(element){
 }
 
 function createInvaders(){
-	for(i=1;i<=12;++i){
-		for(j=1;j<=5;++j){
-			var newInvader=document.createElement('div');
-			newInvader.classList.add('invader');
-			newInvader.innerHTML='$';
-			document.body.appendChild(newInvader);
-			newInvader.style.left=String(i*50)+'px'; // TODO center this
-			newInvader.style.top=String(j*50)+'px';
-			invaders.push(newInvader);
-		}
+	for(i=1;i<=12;++i){ // TODO better positioning
+		createInvader(10,i*50,50);
+		createInvader(5,i*50,100);
+		createInvader(5,i*50,150);
+		createInvader(1,i*50,200);
+		createInvader(1,i*50,250);
 	}
+}
+
+function createInvader(pointValue, posX, posY){
+	var invader=document.createElement('div');
+	invader.classList.add('invader');
+	invader.innerHTML='$';
+	invader.style.left=String(posX)+'px';
+	invader.style.top=String(posY)+'px';
+	invader.pointValue=pointValue;
+	document.body.appendChild(invader);
+	invaders.push(invader);
 }
 
 function createShip(){
@@ -191,10 +209,10 @@ function createScore(){
 	document.body.appendChild(score);
 }
 
-function onload(e){
+function onload(e){ // TODO more appropriately, "gameStart". onload should call gameStart.
 	document.onkeydown=onkeydown;
 	document.onkeyup=onkeyup;
-	tickTimer=setInterval(tick,tickInterval); // TODO null this on game over
+	tickTimer=setInterval(tick,tickInterval);
 	createInvaders();
 	createShip();
 	createScore();
