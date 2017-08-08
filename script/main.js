@@ -174,17 +174,18 @@ function getElementBottom(element){
 
 function createInvaders(){
 	for(i=1;i<=12;++i){ // TODO better positioning
-		createInvader(10,i*50,50);
-		createInvader(5,i*50,100);
-		createInvader(5,i*50,150);
-		createInvader(1,i*50,200);
-		createInvader(1,i*50,250);
+		createInvader('invader3', 10,i*50,50);
+		createInvader('invader2',5,i*50,100);
+		createInvader('invader2',5,i*50,150);
+		createInvader('invader1',1,i*50,200);
+		createInvader('invader1',1,i*50,250);
 	}
 }
 
-function createInvader(pointValue, posX, posY){
+function createInvader(style, pointValue, posX, posY){
 	var invader=document.createElement('div');
 	invader.classList.add('invader');
+	invader.classList.add(style);
 	invader.innerHTML='$';
 	invader.style.left=String(posX)+'px';
 	invader.style.top=String(posY)+'px';

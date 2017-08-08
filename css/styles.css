@@ -13,8 +13,8 @@ body {
 .score {
 	color: lime;
 	position: absolute;
-	left='20px';
-	top='20px';
+	left: '20px';
+	top: '20px';
 	font-size: 400%;
 }
 
@@ -28,9 +28,22 @@ body {
 	position: fixed;
 }
 
+/* TODO inherited styles for different tier invaders*/
 .invader {
 	font-size: 300%;
 	position: absolute;
+}
+
+.invader1 {
+	color: red;
+}
+
+.invader2 {
+	color: blue;
+}
+
+.invader3 {
+	color: green;
 }
 
 .victory {
