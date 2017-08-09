@@ -13,8 +13,8 @@ body {
 .score {
 	color: lime;
 	position: absolute;
-	left: '20px';
-	top: '20px';
+	left: 20px;
+	top: 20px;
 	font-size: 400%;
 }
 
@@ -47,6 +47,13 @@ body {
 }
 
 .victory {
+	font-size: 800%;
+	height: 100%;
+	width: 100%;
+	margin: 0px;
+}
+
+.failure {
 	font-size: 800%;
 	height: 100%;
 	width: 100%;

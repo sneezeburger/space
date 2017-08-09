@@ -20,7 +20,7 @@ function onkeydown(e){
 }
 
 function doThing(){
-	console.log("invader: ",invaders.length,"shots ", shots.length);
+	animateInvaders(1);
 }
 
 function onkeyup(e){
@@ -55,7 +55,7 @@ function tick(){
 	this.previousTime=thisTickTime;
 }
 
-function shoot(){
+function shoot(){ // TODO SFX! https://modernweb.com/audio-synthesis-in-javascript/
 	var newShot=document.createElement('div');
 	newShot.classList.add('shot');
 	newShot.innerHTML='|';
@@ -63,6 +63,14 @@ function shoot(){
 	newShot.style.left=String(getElementLeft(ship))+'px';
 	newShot.style.top=String(getElementTop(ship)-ship.offsetHeight)+'px'; // TODO not quite right
 	shots.push(newShot);
+}
+
+function gameOver(){
+	var text=document.createElement('div');
+	text.classList.add('failure');
+	text.innerHTML='YOU BLEW IT';
+	document.body.appendChild(text);
+	clearInterval(tickTimer);
 }
 
 function checkForVictory(){
@@ -114,21 +122,49 @@ function animateInvaders(elapsedSec){
 		this.time=0;
 	}
 	this.time+=elapsedSec;
-	if(this.time>1){
-		this.time-=1;
-//		console.log("Animate!");
+	if(this.time>getInvaderAnimationDelay()){
+		this.time-=getInvaderAnimationDelay();
+		var knownOffset=null;
+		for(i=0;i<invaders.length;++i){
+			if(invadersMovingRight){
+				invaders[i].style.left=String(getElementLeft(invaders[i])+invaderSpeedPixelsPerSec)+'px';
+				if(getElementRight(invaders[i])<1){
+					knownOffset=-Math.max(knownOffset,Math.abs(getElementRight(invaders[i])));
+				}
+			} else {
+				invaders[i].style.left=String(getElementLeft(invaders[i])-invaderSpeedPixelsPerSec)+'px';
+				if(getElementLeft(invaders[i])<1){
+					knownOffset=Math.max(knownOffset,Math.abs(getElementLeft(invaders[i])));
+				}
+			}
+		}
+		if(knownOffset && knownOffset!=0){
+			invadersMovingRight=!invadersMovingRight;
+			for(i=0;i<invaders.length;++i){
+				invaders[i].style.top=String(getElementTop(invaders[i])+60)+'px';
+				invaders[i].style.left=String(getElementLeft(invaders[i])+knownOffset)+'px';
+			}
+		}
 	}
 }
 
+function getInvaderAnimationDelay(){
+	return .05+invaders.length/60;
+}
+
 function checkForCollisions(){
-	for(i=0;i<shots.length;++i){ // TODO shots.foreach?
-		for(j=0;j<invaders.length;++j){
+	for(j=0;j<invaders.length;++j){
+		for(i=0;i<shots.length;++i){ // TODO shots.foreach?
 			if(overlap(shots[i],invaders[j])){
 				shots[i].style.display='none';
 				invaders[j].style.display='none';
 				// TODO add a HTML5 canvas and use it to draw fancy particle explosions
 				addPoints(invaders[j].pointValue);
 			}
+		}
+		if(overlap(ship,invaders[j])){
+			gameOver();
+			break;
 		}
 	}
 }
@@ -180,6 +216,7 @@ function createInvaders(){
 		createInvader('invader1',1,i*50,200);
 		createInvader('invader1',1,i*50,250);
 	}
+	invadersMovingRight=true;
 }
 
 function createInvader(style, pointValue, posX, posY){
@@ -241,10 +278,12 @@ var moveright=0;
 var moveleft=0;
 var shots=[]; // holds HTML shot elements
 var invaders=[]; // holds HTML invader elements
+var invadersMovingRight;
 
 // Configurables
 var tickInterval=10;
-var shipSpeedPixelsPerSec=150;
-var shotSpeedPixelsPerSec=450;
+var shipSpeedPixelsPerSec=300;
+var shotSpeedPixelsPerSec=800;
+var invaderSpeedPixelsPerSec=75;
 
 window.addEventListener('load',onload);
