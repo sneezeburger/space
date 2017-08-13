@@ -32,18 +32,32 @@ body {
 .invader {
 	font-size: 300%;
 	position: absolute;
+	width: 32px;
+	height: 32px;
 }
 
-.invader1 {
-	color: red;
+.invaderA1 {
+	background-image: url('../img/a_1.png');
 }
 
-.invader2 {
-	color: blue;
+.invaderB1 {
+	background-image: url('../img/b_1.png');
 }
 
-.invader3 {
-	color: green;
+.invaderC1 {
+	background-image: url('../img/c_1.png');
+}
+
+.invaderA2 {
+	background-image: url('../img/a_2.png');
+}
+
+.invaderB2 {
+	background-image: url('../img/b_2.png');
+}
+
+.invaderC2 {
+	background-image: url('../img/c_2.png');
 }
 
 .victory {

@@ -8,7 +8,7 @@ function onkeydown(e){
 			break;
 		case ' ':
 		case 'ArrowUp':
-			if(!shooting){ // TODO may need to cap number of shots
+			if(!shooting){
 				shooting=1;
 				shoot();
 			}
@@ -56,6 +56,7 @@ function tick(){
 }
 
 function shoot(){ // TODO SFX! https://modernweb.com/audio-synthesis-in-javascript/
+	if(shots.length>=maxShots) return;
 	var newShot=document.createElement('div');
 	newShot.classList.add('shot');
 	newShot.innerHTML='|';
@@ -137,6 +138,11 @@ function animateInvaders(elapsedSec){
 					knownOffset=Math.max(knownOffset,Math.abs(getElementLeft(invaders[i])));
 				}
 			}
+			var styleToRemove=String('invader'+invaders[i].invaderStyle)+((invaders[i].animationState)?'1':'2');
+			invaders[i].classList.remove(styleToRemove);
+			var styleToAdd=String('invader'+invaders[i].invaderStyle)+((invaders[i].animationState)?'2':'1');
+			invaders[i].classList.add(styleToAdd);
+			invaders[i].animationState=!invaders[i].animationState;
 		}
 		if(knownOffset && knownOffset!=0){
 			invadersMovingRight=!invadersMovingRight;
@@ -210,11 +216,11 @@ function getElementBottom(element){
 
 function createInvaders(){
 	for(i=1;i<=12;++i){ // TODO better positioning
-		createInvader('invader3', 10,i*50,50);
-		createInvader('invader2',5,i*50,100);
-		createInvader('invader2',5,i*50,150);
-		createInvader('invader1',1,i*50,200);
-		createInvader('invader1',1,i*50,250);
+		createInvader('C', 10,i*50,50);
+		createInvader('B',5,i*50,100);
+		createInvader('B',5,i*50,150);
+		createInvader('A',1,i*50,200);
+		createInvader('A',1,i*50,250);
 	}
 	invadersMovingRight=true;
 }
@@ -222,8 +228,9 @@ function createInvaders(){
 function createInvader(style, pointValue, posX, posY){
 	var invader=document.createElement('div');
 	invader.classList.add('invader');
-	invader.classList.add(style);
-	invader.innerHTML='$';
+	invader.animationState=1; // TODO ew.
+	invader.invaderStyle=style; // TODO ew!
+	invader.classList.add(String('invader'+style+invader.animationState));
 	invader.style.left=String(posX)+'px';
 	invader.style.top=String(posY)+'px';
 	invader.pointValue=pointValue;
@@ -285,5 +292,6 @@ var tickInterval=10;
 var shipSpeedPixelsPerSec=300;
 var shotSpeedPixelsPerSec=800;
 var invaderSpeedPixelsPerSec=75;
+var maxShots=4;
 
 window.addEventListener('load',onload);
