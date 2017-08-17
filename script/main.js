@@ -76,6 +76,7 @@ function gameOver(){
 
 function checkForVictory(){
 	if(invaders.length<1){
+		createInvaders(); return;
 		var text=document.createElement('div');
 		text.classList.add('victory');
 		text.innerHTML='CONGRATULATIONS YOU HAVE SAVED THE PRINCESS';
@@ -108,8 +109,8 @@ function animateShip(elapsedSec){
 }
 
 function animateShots(elapsedSec){
-	for(i=0;i<shots.length;++i){ // TODO shots.foreach?
-		if(getElementTop(shots[i])<0){ // TODO let it go off 
+	for(i=0;i<shots.length;++i){
+		if(getElementTop(shots[i])+shots[i].offsetHeight<0){
 			shots[i].parentNode.removeChild(shots[i]);
 			shots.splice(i,1);
 		}else{
@@ -155,12 +156,12 @@ function animateInvaders(elapsedSec){
 }
 
 function getInvaderAnimationDelay(){
-	return .05+invaders.length/60;
+	return .1+invaders.length/40 - wavesCleared*.05; // TODO make this dependent on how many waves have been cleared
 }
 
 function checkForCollisions(){
 	for(j=0;j<invaders.length;++j){
-		for(i=0;i<shots.length;++i){ // TODO shots.foreach?
+		for(i=0;i<shots.length;++i){
 			if(overlap(shots[i],invaders[j])){
 				shots[i].style.display='none';
 				invaders[j].style.display='none';
@@ -168,7 +169,7 @@ function checkForCollisions(){
 				addPoints(invaders[j].pointValue);
 			}
 		}
-		if(overlap(ship,invaders[j])){
+		if(overlap(ship,invaders[j])){ // TODO check if invaders are off screen
 			gameOver();
 			break;
 		}
@@ -181,7 +182,7 @@ function addPoints(points){
 }
 
 function removeStaleShots(){
-	for(i=0;i<shots.length;++i){ // TODO shots.foreach?
+	for(i=0;i<shots.length;++i){
 		if(shots[i].style.display=='none'){
 			shots[i].parentNode.removeChild(shots[i]);
 			shots.splice(i,1);
@@ -215,12 +216,12 @@ function getElementBottom(element){
 }
 
 function createInvaders(){
-	for(i=1;i<=12;++i){ // TODO better positioning
-		createInvader('C', 10,i*50,50);
-		createInvader('B',5,i*50,100);
-		createInvader('B',5,i*50,150);
-		createInvader('A',1,i*50,200);
-		createInvader('A',1,i*50,250);
+	for(i=0;i<12;++i){
+		createInvader('C', 10,10+i*50,10);
+		createInvader('B',5,10+i*50,60);
+		createInvader('B',5,10+i*50,110);
+		createInvader('A',1,10+i*50,160);
+		createInvader('A',1,10+i*50,210);
 	}
 	invadersMovingRight=true;
 }
@@ -283,6 +284,7 @@ var score;
 var shooting=0;
 var moveright=0;
 var moveleft=0;
+var wavesCleared=0;
 var shots=[]; // holds HTML shot elements
 var invaders=[]; // holds HTML invader elements
 var invadersMovingRight;
