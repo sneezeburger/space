@@ -19,12 +19,12 @@ function onkeydown(e){
 	}
 }
 
-/// This is a thing
 function doThing(){
 	animateInvaders(1);
 }
 
 function onkeyup(e){
+	print(e)
 	switch(e.key){
 		case 'ArrowRight':
 			moveright=0;
