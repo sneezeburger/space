@@ -76,7 +76,7 @@ function gameOver(){
 
 function checkForVictory(){
 	if(invaders.length<1){
-		createInvaders(); return;
+		/// createInvaders(); return;
 		var text=document.createElement('div');
 		text.classList.add('victory');
 		text.innerHTML='CONGRATULATIONS YOU HAVE SAVED THE PRINCESS';
