@@ -212,3 +212,85 @@ function addPoints(points) {
     score.innerHTML = '0'.repeat(Math.max(0, 6 - String(newScore).length)) + String(newScore);
 }
 
+function removeStaleShots() {
+    for (let i = 0; i < shots.length; ++i) {
+        if (shots[i].style.display === 'none') {
+            shots[i].parentNode.removeChild(shots[i]);
+            shots.splice(i, 1);
+        }
+    }
+}
+
+function removeStaleInvaders() {
+    for (let j = 0; j < invaders.length; ++j) {
+        if (invaders[j].style.display === 'none') {
+            invaders[j].parentNode.removeChild(invaders[j]);
+            invaders.splice(j, 1);
+        }
+    }
+}
+
+function getElementLeft(element) {
+    return parseFloat(document.defaultView.getComputedStyle(element).left);
+}
+
+function getElementRight(element) {
+    return parseFloat(document.defaultView.getComputedStyle(element).right);
+}
+
+function getElementTop(element) {
+    return parseFloat(document.defaultView.getComputedStyle(element).top);
+}
+
+function getElementBottom(element) {
+    return parseFloat(document.defaultView.getComputedStyle(element).bottom);
+}
+
+function createInvaders() {
+    for (let i = 0; i < 12; ++i) {
+        createInvader('C', 10, 10 + i * 50, 10);
+        createInvader('B', 5, 10 + i * 50, 60);
+        createInvader('B', 5, 10 + i * 50, 110);
+        createInvader('A', 1, 10 + i * 50, 160);
+        createInvader('A', 1, 10 + i * 50, 210);
+    }
+    invadersMovingRight = true;
+}
+
+function createInvader(style, pointValue, posX, posY) {
+    const invader = document.createElement('div');
+    invader.classList.add('invader');
+    invader.animationState = 1;
+    invader.invaderStyle = style;
+    invader.classList.add(`invader${style}${invader.animationState}`);
+    invader.style.left = `${posX}px`;
+    invader.style.top = `${posY}px`;
+    invader.pointValue = pointValue;
+    document.body.appendChild(invader);
+    invaders.push(invader);
+}
+
+function createShip() {
+    ship = document.createElement('div');
+    ship.classList.add('ship');
+    ship.innerHTML = 'X';
+    ship.style.left = '50%';
+    ship.style.bottom = '40px';
+    document.body.appendChild(ship);
+}
+
+function createScore() {
+    score = document.createElement('div');
+    score.classList.add('score');
+    score.innerHTML = '000000';
+    document.body.appendChild(score);
+}
+
+function overlap(a, b) {
+    const rectA = a.getBoundingClientRect();
+    const rectB = b.getBoundingClientRect();
+    return !(rectA.right < rectB.left ||
+        rectA.left > rectB.right ||
+        rectA.bottom < rectB.top ||
+        rectA.top > rectB.bottom);
+}
